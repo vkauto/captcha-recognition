@@ -58,6 +58,7 @@ class Captcha
 		if ($captchaText === false)
 		{
 			Log::write("Captcha [{$captchaID}] recognition was failed.", ['CaptchaRecognition', 'ERROR']);
+			return false;
 		}
 		else
 		{
