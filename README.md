@@ -1,5 +1,7 @@
 # Распознавание капчи
 
+![Sample captcha image](http://i.imgur.com/Ni4NYbo.png)
+
 ```php
 use VKauto\CaptchaRecognition\Captcha;
 
