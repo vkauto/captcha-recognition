@@ -7,15 +7,30 @@ use VKauto\Utils\Log;
 
 class Captcha
 {
+	/**
+	 * Сервисы распознавания каптчи
+	 */
 	const AntiCaptchaService	= 'http://anti-captcha.com';
 	const AntiGateService		= 'http://antigate.com';
 	const RIPCaptchaService 	= 'http://ripcaptcha.com/';
 	const ruCaptchaService 		= 'https://rucaptcha.com';
 
+	/**
+	 * Ссылка на сервис, с которым класс работает в данный момент
+	 * @var string
+	 */
 	protected $serviceURL;
 
+	/**
+	 * Ключ для работы с API вышеуказанного сервиса
+	 * @var string
+	 */
 	protected $apikey;
 
+	/**
+	 * Баланс аккаунта
+	 * @var float
+	 */
 	public $balance;
 
 	public function __construct($serviceURL, $apikey)
@@ -25,6 +40,9 @@ class Captcha
 		$this->updateBalance();
 	}
 
+	/**
+	 * Обновление баланса
+	 */
 	public function updateBalance()
 	{
 		$response = Request::get($this->serviceURL . "/res.php?action=getbalance&key={$this->apikey}");
@@ -40,6 +58,11 @@ class Captcha
 		$this->balance = $response;
 	}
 
+	/**
+	 * Распозование текста на изображении
+	 * @param  string $imageURL
+	 * @return string|bool
+	 */
 	public function recognize($imageURL)
 	{
 		$image = $this->getImage($imageURL);
@@ -67,11 +90,21 @@ class Captcha
 		}
 	}
 
+	/**
+	 * Получение base64 изображения по ссылке
+	 * @param  string $imageURL
+	 * @return string
+	 */
 	private function getImage($imageURL)
 	{
 		return base64_encode(Request::get($imageURL));
 	}
 
+	/**
+	 * Загрузка изображения в очередь для распозавания
+	 * @param  string $image
+	 * @return int|bool
+	 */
 	private function uploadImage($image)
 	{
 		$response = Request::post($this->serviceURL . '/in.php',
@@ -91,6 +124,11 @@ class Captcha
 		}
 	}
 
+	/**
+	 * Проверка и запрос распознанного текста
+	 * @param  int $captchaID
+	 * @return string|bool
+	 */
 	private function getCaptchaText($captchaID)
 	{
 		for ($tries = 1; $tries <= 5; $tries++)
